@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "unistd.h": "c",
+        "local_lim.h": "c",
+        "typeinfo": "c",
+        "limits.h": "c",
+        "syslimits.h": "c",
+        "string.h": "c",
+        "types.h": "c",
+        "string_utils.h": "c",
+        "ctype.h": "c",
+        "myshell.h": "c"
+    }
+}
