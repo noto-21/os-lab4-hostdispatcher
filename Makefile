@@ -1,21 +1,25 @@
-GCC = gcc
-CFLAGS = -g -Wall
-RM = rm -f
+CC = gcc
+CFLAGS = -Wall -Wextra -g
 
-C_FILE = myshell.c kernel_commands.c string_utils.c
-OUTPUT_EXECUTABLE = output
+# List of source files
+SRCS = exec-fork.c process.c queue.c string_utils.c
+# List of header files
+HDRS = queue.h string_utils.h
 
-all: compile execute
+# Generate object file names from source file names
+OBJS = $(SRCS:.c=.o)
 
-compile: $(C_FILE)
-	echo "Compiling..."
-	$(GCC) $(CFLAGS) -o $(OUTPUT_EXECUTABLE) $(C_FILE) -I.
-	echo "\n"
+# The main target
+dispatcher: $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $(OBJS)
 
-execute:
-	./$(OUTPUT_EXECUTABLE)
+# Rules for generating object files
+%.o: %.c $(HDRS)
+	$(CC) $(CFLAGS) -c $< -o $@
 
-# clean:
-# 	# echo "Clean up..."
-# 	# $(RM) ./$(OUTPUT_EXECUTABLE)
-# 	# echo "\n"
+# Clean rule
+clean:
+	rm -f dispatcher $(OBJS)
+
+# Clean phony
+.PHONY: clean
