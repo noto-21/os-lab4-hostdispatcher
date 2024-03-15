@@ -77,6 +77,7 @@ int main() {
             }
         }
 
+//job queue priority
         process_t *temp_process = pop(job_queue);
         switch(temp_process->priority){
             case 0:
