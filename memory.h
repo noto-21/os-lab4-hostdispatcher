@@ -1,15 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "resource.h"
 
 #ifndef MEMORY_H_
 #define MEMORY_H_
 
-/** Defines the total amount of memory allocated for use in megabytes. */
-#define ALLOCATED_MEMORY 1024
+resource_t *available_res;
 
-int mem_index = 0;
-int memory[ALLOCATED_MEMORY] = {NULL, NULL};
+const MEM_MODE_REALTIME = 0;
+const MEM_MODE_JOB = 1;
 
-extern void allocate_memory(int mbytes);
+enum MEM_MODE {
+    REALTIME = MEM_MODE_REALTIME,
+    JOB = MEM_MODE_JOB
+};
+
+// Return memoy index
+extern int allocate_memory(enum MEM_MODE mode, int mbytes);
 
 #endif /* MEMORY_H_ */

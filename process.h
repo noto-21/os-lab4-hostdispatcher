@@ -5,7 +5,6 @@
 #define PROCESS_H_
 
 typedef struct {
-    int id; /** Processor ID to identify memory usage and allocation */
     int arrival_time;    /** Time when the process arrives in the system. */
     int priority;        /** Priority of the process, affects queue positioning. */
     int processor_time;  /** Time required for processing. */

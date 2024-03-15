@@ -11,7 +11,6 @@
 
 queue_t *job_queue, *realtime_queue, *first_priority, *second_priority, *third_priority;
 process_t *running_process = NULL;
-resource_t *available_res;
 
 int time;
 bool terminate = false;
