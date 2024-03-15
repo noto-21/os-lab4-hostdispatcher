@@ -77,6 +77,22 @@ int main() {
             }
         }
 
+        process_t *temp_process = pop(job_queue);
+        switch(temp_process->priority){
+            case 0:
+                push (first_priority, temp_process);
+                break;
+            case 1:
+                push (second_priority, temp_process);
+                break;
+            case 2:
+                push (third_priority, temp_process);
+                break;
+            default:
+                break;
+
+        }
+    
 
         time++;
     }
