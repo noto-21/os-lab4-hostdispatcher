@@ -13,7 +13,6 @@ queue_t *job_queue, *realtime_queue, *first_priority, *second_priority, *third_p
 
 int time;
 bool terminate = false;
-process_t dispatch_list[MAX_PROCESSES];
 
 int main() {
     realtime_queue = (queue_t*) malloc(sizeof(queue_t));
@@ -47,19 +46,30 @@ int main() {
     process_t data;
 
     // Read each line from the file and insert the process data into a queue.
-    int i = 0;
-    while (fscanf(file, "%d, %d, %d, %d, %d, %d, %d, %d\n", &data.arrival_time, &data.priority, &data.processor_time, &data.mbytes, &data.printers, &data.scanners, &data.modems, &data.cds) == 4) {
+    int len = 0;
+    
+    process_t input_process_list[MAX_PROCESSES];
+    while (fscanf(file, "%d, %d, %d, %d, %d, %d, %d, %d\n", &data.arrival_time, &data.priority, &data.processor_time, &data.mbytes, &data.printers, &data.scanners, &data.modems, &data.cds) == 8) {
         data.mem_index = -1;
-        dispatch_list[i++] = data;
+        input_process_list[len++] = data;
+    }
+
+    process_t dispatch_list[len];
+    for (int i = 0; i < len; i++) {
+        dispatch_list[i] = input_process_list[i];
     }
 
     // Close the file after reading the contents.
     fclose(file);
 
+    
+
     int dispatch_list_len = sizeof(dispatch_list) / sizeof(dispatch_list[0]);
     qsort(dispatch_list, dispatch_list_len, sizeof(process_t), arrivalTime);
     for (int i = 0; i < dispatch_list_len; i ++) {
         process_t *proc = &dispatch_list[i];
+        printf("Time: %d, Priority: %d, Processor Time: %d, Memory: %d, Printers: %d, Scanners: %d, Modems: %d, CDs: %d\n", time, proc->priority, proc->processor_time, proc->mbytes, proc->printers, proc->scanners, proc->modems, proc->cds);
+
         if (proc->priority == 0) {
             push(realtime_queue, proc);
         } else {
