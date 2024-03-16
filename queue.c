@@ -17,12 +17,19 @@ extern void push(node_t *queue, process_t *process) {
         fprintf(stderr, "Memory allocation failed\n");
         exit(EXIT_FAILURE);
     }
+
+    // Traverse the queue to find the last node.
+    node_t *current = queue;
+    while (current->next != NULL) {
+        current = current->next;
+    }
     
     // Assign the process to the new node and adjust pointers to insert the new node into the queue.
     new_node->process = process;     // Point the new_node's process to the passed process.
     new_node->next = NULL;     // Set new_node's next pointer to NULL.
-    new_node->prev = queue;    // Set new_node's prev pointer to the current node of the queue.
-    queue->next = new_node;    // Insert the new_node right after the dummy head node.
+    new_node->prev = current;    // Set new_node's prev pointer to the current node of the queue.
+    current->next = new_node;    // Insert the new_node right after the dummy head node.
+    queue->prev = current;    // Set the dummy head node's prev pointer to the new_node.
 }
 
 /**
@@ -36,19 +43,32 @@ extern void push(node_t *queue, process_t *process) {
  * Assumes the 'queue' pointer points to a dummy head node.
  */
 extern process_t *pop(node_t *queue) {
-    if (queue->next == NULL) {
+    if (queue == NULL || queue->next == NULL) {
         // If the queue is empty, return NULL.
         return NULL;
     }
     
-    node_t *current_node = queue->next;   // Start with the first actual node.
-    node_t *previous_node = queue;        // Keep track of the previous node, starting with the dummy head.
+    node_t *current_node = queue;   
+    node_t *next_node = current_node->next;    
+    node_t *previous_node = current_node->prev;       
 
     // Disconnect the last node from the queue.
-    previous_node->next = NULL;
+    if (next_node != NULL) {
+        next_node->prev = previous_node;
+        queue = next_node;
+    }
+
+    if (previous_node != NULL) {
+        previous_node->next = next_node;
+        queue = previous_node;
+    }
+
+    current_node->next = NULL;
+    current_node->prev = NULL;
 
     // Extract the process from the last node and return it.
     process_t *return_process = current_node->process;
+    free(current_node);
 
     return return_process;
 }

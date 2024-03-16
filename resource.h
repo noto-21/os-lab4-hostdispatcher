@@ -1,8 +1,12 @@
 #ifndef RESOURCE_H_
 #define RESOURCE_H_
 
-/** Defines the total amount of memory allocated for use in megabytes. */
+#include "memory.h"
+
 #define ALLOCATED_MEMORY 1024
+#define MAX_CDS 2
+#define MAX_SCANNERS 1
+#define MAX_MODEMS 1
 
 typedef struct {
     int printers;            /** Number of printers available. */
@@ -14,5 +18,7 @@ typedef struct {
     int memory[ALLOCATED_MEMORY]; /** Array representing memory slots, for detailed memory management. */
     int mem_index;
 } resource_t;
+
+resource_t *available_res;
 
 #endif /* RESOURCE_H_ */

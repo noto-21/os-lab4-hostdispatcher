@@ -1,21 +1,25 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "resource.h"
 
 #ifndef MEMORY_H_
 #define MEMORY_H_
 
-resource_t *available_res;
+#include "resource.h"
+#include "process.h"
 
-const MEM_MODE_REALTIME = 0;
-const MEM_MODE_JOB = 1;
+/** Defines the total amount of memory allocated for use in megabytes. */
+#define MAX_REALTIME_MEMORY 64
+#define MAX_JOB_MEMORY 960
+
+#define REALTIME_MODE 0
+#define JOB_MODE 1
 
 enum MEM_MODE {
-    REALTIME = MEM_MODE_REALTIME,
-    JOB = MEM_MODE_JOB
+    REALTIME = REALTIME_MODE,
+    JOB = JOB_MODE
 };
 
-// Return memoy index
-extern int allocate_memory(enum MEM_MODE mode, int mbytes);
+extern void allocate_memory(enum MEM_MODE mode, process_t *proc);
+extern void deallocate_memory(enum MEM_MODE mode, process_t *proc);
 
 #endif /* MEMORY_H_ */
