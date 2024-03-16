@@ -68,13 +68,18 @@ int main() {
     qsort(dispatch_list, dispatch_list_len, sizeof(process_t), arrivalTime);
     for (int i = 0; i < dispatch_list_len; i ++) {
         process_t *proc = &dispatch_list[i];
-        printf("Time: %d, Priority: %d, Processor Time: %d, Memory: %d, Printers: %d, Scanners: %d, Modems: %d, CDs: %d\n", time, proc->priority, proc->processor_time, proc->mbytes, proc->printers, proc->scanners, proc->modems, proc->cds);
 
         if (proc->priority == 0) {
             push(realtime_queue, proc);
         } else {
             push(job_queue, proc);
         }
+    }
+
+    queue_t *current_process = realtime_queue;
+    while (current_process != NULL) {
+        printf("Arrival Time: %d, Priority: %d, Processor Time: %d, Memory: %d, Printers: %d, Scanners: %d, Modems: %d, CDs: %d\n", current_process->process->arrival_time, current_process->process->priority, current_process->process->processor_time, current_process->process->mbytes, current_process->process->printers, current_process->process->scanners, current_process->process->modems, current_process->process->cds);
+        // current_process = current_process->next;
     }
 
     process_t *temp_job_process;
