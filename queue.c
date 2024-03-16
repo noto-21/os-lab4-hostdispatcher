@@ -10,7 +10,7 @@
  * and inserts it at the end of the queue. Assumes that the passed 'queue' 
  * pointer points to a dummy head node to keep things simple.
  */
-extern void push(node_t *queue, process_t *process) {
+extern void push(queue_t **queue, process_t *process) {
     // Dynamically allocate memory for a new node.
     node_t *new_node = (node_t*) malloc(sizeof(node_t));
     if (!new_node) {
@@ -18,18 +18,36 @@ extern void push(node_t *queue, process_t *process) {
         exit(EXIT_FAILURE);
     }
 
-    // Traverse the queue to find the last node.
-    node_t *current = queue;
-    while (current->next != NULL) {
-        current = current->next;
-    }
+    // process_t *proc = process;
     
-    // Assign the process to the new node and adjust pointers to insert the new node into the queue.
-    new_node->process = process;     // Point the new_node's process to the passed process.
-    new_node->next = NULL;     // Set new_node's next pointer to NULL.
-    new_node->prev = current;    // Set new_node's prev pointer to the current node of the queue.
-    current->next = new_node;    // Insert the new_node right after the dummy head node.
-    queue->prev = current;    // Set the dummy head node's prev pointer to the new_node.
+    // printf("(Before) Arrival Time: %d, Priority: %d, Processor Time: %d, Memory: %d, Printers: %d, Scanners: %d, Modems: %d, CDs: %d\n", proc->arrival_time, proc->priority, proc->processor_time, proc->mbytes, proc->printers, proc->scanners, proc->modems, proc->cds);
+
+    // Dynamically allocate memory for a new node.
+    node_t *new_node = (node_t*) malloc(sizeof(node_t));
+    if (!new_node) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // Initialize the new_node with process and NULL pointers for prev and next.
+    new_node->process = process; // Assign process to the new node.
+    new_node->next = NULL; // This new node will be the last node, so next is NULL.
+    new_node->prev = NULL; // This will be updated below if it's not the first node.
+
+    if (*queue == NULL) {
+        // The queue is empty, so this new node is now the queue.
+        *queue = new_node;
+    } else {
+        // Traverse the queue to find the last node.
+        node_t *current = *queue;
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        
+        // Link the new node into the list.
+        new_node->prev = current; // Set new_node's prev pointer to the last node.
+        current->next = new_node; // Link the last node to the new node.
+    }
 }
 
 /**
@@ -42,33 +60,29 @@ extern void push(node_t *queue, process_t *process) {
  * and returns it. It manages the pointers of the preceding node to bypass the removed node.
  * Assumes the 'queue' pointer points to a dummy head node.
  */
-extern process_t *pop(node_t *queue) {
-    if (queue == NULL || queue->next == NULL) {
-        // If the queue is empty, return NULL.
+extern process_t *pop(node_t **queue) {
+    if (queue == NULL || *queue == NULL || (*queue)->next == NULL) {
+        // If the queue is NULL, the queue is empty, or there is no next node, return NULL.
         return NULL;
     }
-    
-    node_t *current_node = queue;   
-    node_t *next_node = current_node->next;    
-    node_t *previous_node = current_node->prev;       
 
-    // Disconnect the last node from the queue.
-    if (next_node != NULL) {
-        next_node->prev = previous_node;
-        queue = next_node;
+    // The node to be removed is the one immediately following the current node.
+    node_t *node_to_remove = (*queue)->next;
+
+    // Extract the process from the node to be removed.
+    process_t *return_process = node_to_remove->process;
+
+    // Adjust the next pointer of the current node to bypass the node to be removed.
+    (*queue)->next = node_to_remove->next;
+
+    // If there is a node after the one being removed, adjust its prev pointer too.
+    if (node_to_remove->next != NULL) {
+        node_to_remove->next->prev = *queue;
     }
 
-    if (previous_node != NULL) {
-        previous_node->next = next_node;
-        queue = previous_node;
-    }
+    // Free the memory allocated for the node that's being removed.
+    free(node_to_remove);
 
-    current_node->next = NULL;
-    current_node->prev = NULL;
-
-    // Extract the process from the last node and return it.
-    process_t *return_process = current_node->process;
-    free(current_node);
-
+    // Return the process that was stored in the removed node.
     return return_process;
 }

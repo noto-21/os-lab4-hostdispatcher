@@ -76,11 +76,15 @@ int main() {
         }
     }
 
-    queue_t *current_process = realtime_queue;
-    while (current_process != NULL) {
-        printf("Arrival Time: %d, Priority: %d, Processor Time: %d, Memory: %d, Printers: %d, Scanners: %d, Modems: %d, CDs: %d\n", current_process->process->arrival_time, current_process->process->priority, current_process->process->processor_time, current_process->process->mbytes, current_process->process->printers, current_process->process->scanners, current_process->process->modems, current_process->process->cds);
-        // current_process = current_process->next;
-    }
+    // queue_t *current_process = realtime_queue;
+    // while (current_process != NULL) {
+    //     if (current_process->process == NULL) {
+    //         printf("Cool");
+    //         // printf("Arrival Time: %d, Priority: %d, Processor Time: %d, Memory: %d, Printers: %d, Scanners: %d, Modems: %d, CDs: %d\n", current_process->process->arrival_time, current_process->process->priority, current_process->process->processor_time, current_process->process->mbytes, current_process->process->printers, current_process->process->scanners, current_process->process->modems, current_process->process->cds);
+    //     }
+    //     // printf("Arrival Time: %d, Priority: %d, Processor Time: %d, Memory: %d, Printers: %d, Scanners: %d, Modems: %d, CDs: %d\n", current_process->process->arrival_time, current_process->process->priority, current_process->process->processor_time, current_process->process->mbytes, current_process->process->printers, current_process->process->scanners, current_process->process->modems, current_process->process->cds);
+    //     // current_process = current_process->next;
+    // }
 
     process_t *temp_job_process;
     process_t *temp_first_priority;

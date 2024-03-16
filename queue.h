@@ -27,7 +27,7 @@ typedef node_t queue_t;
  * and inserts it at the end of the queue. Assumes that the passed 'queue' 
  * pointer points to a dummy head node to keep things simple.
  */
-extern void push(queue_t *queue, process_t *process);
+extern void push(queue_t **queue, process_t *process);
 
 /**
  * Removes and returns the last process from the queue.
@@ -39,6 +39,6 @@ extern void push(queue_t *queue, process_t *process);
  * and returns it. It manages the pointers of the preceding node to bypass the removed node.
  * Assumes the 'queue' pointer points to a dummy head node.
  */
-extern process_t *pop(queue_t *queue);
+extern process_t *pop(queue_t **queue);
 
 #endif /* QUEUE_H_ */
