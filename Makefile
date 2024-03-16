@@ -7,7 +7,7 @@ CFLAGS = -Wall -Wextra -g
 # queue.c    
 
 # List of source files
-SRCS = main.c queue.c memory.c util.c
+SRCS = main.c queue.c memory.c util.c resource.c
 # List of header files
 HDRS = queue.h memory.h util.h process.h resource.h
 

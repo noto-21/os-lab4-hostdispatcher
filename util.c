@@ -1,7 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
 #include "util.h"
+#include "process.h"
 
 extern int arrivalTime(const void* a, const void* b) {
     process_t *process_a = (process_t *)a;

@@ -16,12 +16,12 @@ bool terminate = false;
 process_t dispatch_list[MAX_PROCESSES];
 
 int main() {
-    realtime_queue = (node_t*) malloc(sizeof(node_t));
-    job_queue = (node_t*) malloc(sizeof(node_t));
+    realtime_queue = (queue_t*) malloc(sizeof(queue_t));
+    job_queue = (queue_t*) malloc(sizeof(queue_t));
 
-    first_priority = (node_t*) malloc(sizeof(node_t));
-    second_priority = (node_t*) malloc(sizeof(node_t));
-    third_priority = (node_t*) malloc(sizeof(node_t));
+    first_priority = (queue_t*) malloc(sizeof(queue_t));
+    second_priority = (queue_t*) malloc(sizeof(queue_t));
+    third_priority = (queue_t*) malloc(sizeof(queue_t));
 
     available_res = (resource_t*) malloc(sizeof(resource_t));
     available_res->cds = MAX_CDS;
@@ -53,6 +53,9 @@ int main() {
         dispatch_list[i++] = data;
     }
 
+    // Close the file after reading the contents.
+    fclose(file);
+
     int dispatch_list_len = sizeof(dispatch_list) / sizeof(dispatch_list[0]);
     qsort(dispatch_list, dispatch_list_len, sizeof(process_t), arrivalTime);
     for (int i = 0; i < dispatch_list_len; i ++) {
@@ -80,12 +83,12 @@ int main() {
                 if (running_process->mem_index == -1)
                     allocate_memory(REALTIME_MODE, running_process);
 
-                printf("Time: %d, Process: %d, Priority: %d, Processor Time: %d, Memory: %d, Printers: %d, Scanners: %d, Modems: %d, CDs: %d\n", time, running_process->priority, running_process->processor_time, running_process->mbytes, running_process->printers, running_process->scanners, running_process->modems, running_process->cds);
+                printf("Time: %d, Priority: %d, Processor Time: %d, Memory: %d, Printers: %d, Scanners: %d, Modems: %d, CDs: %d\n", time, running_process->priority, running_process->processor_time, running_process->mbytes, running_process->printers, running_process->scanners, running_process->modems, running_process->cds);
 
                 if (running_process->processor_time-- <= 0) {
                     deallocate_memory(REALTIME_MODE, running_process);
 
-                    process_t *next_realtime = realtime_queue->next;
+                    queue_t *next_realtime = realtime_queue->next;
                     pop(realtime_queue);
                     if (next_realtime != NULL) {
                         realtime_queue = next_realtime;
@@ -134,7 +137,7 @@ int main() {
                             break;
                     }
 
-                    printf("Time: %d, Process: %d, Priority: %d, Processor Time: %d, Memory: %d, Printers: %d, Scanners: %d, Modems: %d, CDs: %d\n", time, temp_job_process->priority, temp_job_process->processor_time, temp_job_process->mbytes, temp_job_process->printers, temp_job_process->scanners, temp_job_process->modems, temp_job_process->cds);
+                    printf("Time: %d, Priority: %d, Processor Time: %d, Memory: %d, Printers: %d, Scanners: %d, Modems: %d, CDs: %d\n", time, running_process->priority, running_process->processor_time, running_process->mbytes, running_process->printers, running_process->scanners, running_process->modems, running_process->cds);
                     if (temp_job_process->processor_time-- <= 0) {
                         deallocate_memory(JOB_MODE, temp_job_process);
                         temp_job_process = NULL;
@@ -148,7 +151,7 @@ int main() {
                     first_priority->process->processor_time > 0
                 ) {
                     if (temp_first_priority == NULL) {
-                        process_t *next_first_priority = first_priority->next;
+                        queue_t *next_first_priority = first_priority->next;
                         temp_first_priority = pop(first_priority);
                         first_priority = next_first_priority;
                     }
@@ -166,8 +169,7 @@ int main() {
                     }
                     running_process = temp_first_priority;
 
-                    printf("Time: %d, Process: %d, Priority: %d, Processor Time: %d, Memory: %d, Printers: %d, Scanners: %d, Modems: %d, CDs: %d\n", time, running_process->priority, running_process->processor_time, running_process->mbytes, running_process->printers, running_process->scanners, running_process->modems, running_process->cds);
-
+                    printf("Time: %d, Priority: %d, Processor Time: %d, Memory: %d, Printers: %d, Scanners: %d, Modems: %d, CDs: %d\n", time, running_process->priority, running_process->processor_time, running_process->mbytes, running_process->printers, running_process->scanners, running_process->modems, running_process->cds);
                     push(second_priority, temp_first_priority);
                     temp_first_priority = NULL;
 
@@ -190,7 +192,7 @@ int main() {
                 ) {
 
                     if (temp_second_priority == NULL) {
-                        process_t *next_second_priority = second_priority->next;
+                        queue_t *next_second_priority = second_priority->next;
                         temp_second_priority = pop(second_priority);
                         second_priority = next_second_priority;
                     }
@@ -208,8 +210,7 @@ int main() {
                     }
                     running_process = temp_second_priority;
 
-                    printf("Time: %d, Process: %d, Priority: %d, Processor Time: %d, Memory: %d, Printers: %d, Scanners: %d, Modems: %d, CDs: %d\n", time, running_process->priority, running_process->processor_time, running_process->mbytes, running_process->printers, running_process->scanners, running_process->modems, running_process->cds);
-
+                    printf("Time: %d, Priority: %d, Processor Time: %d, Memory: %d, Printers: %d, Scanners: %d, Modems: %d, CDs: %d\n", time, running_process->priority, running_process->processor_time, running_process->mbytes, running_process->printers, running_process->scanners, running_process->modems, running_process->cds);
                     push(third_priority, temp_second_priority);
                     temp_second_priority = NULL;
 
@@ -233,7 +234,7 @@ int main() {
                 ) {
 
                     if (temp_third_priority == NULL) {
-                        process_t *next_third_priority = third_priority->next;
+                        queue_t *next_third_priority = third_priority->next;
                         temp_third_priority = pop(third_priority);
                         third_priority = next_third_priority;
                     }
@@ -251,8 +252,7 @@ int main() {
                     }
                     running_process = temp_third_priority;
 
-                    printf("Time: %d, Process: %d, Priority: %d, Processor Time: %d, Memory: %d, Printers: %d, Scanners: %d, Modems: %d, CDs: %d\n", time, running_process->priority, running_process->processor_time, running_process->mbytes, running_process->printers, running_process->scanners, running_process->modems, running_process->cds);
-
+                    printf("Time: %d, Priority: %d, Processor Time: %d, Memory: %d, Printers: %d, Scanners: %d, Modems: %d, CDs: %d\n", time, running_process->priority, running_process->processor_time, running_process->mbytes, running_process->printers, running_process->scanners, running_process->modems, running_process->cds);
                     push(third_priority, temp_third_priority);
                     temp_third_priority = NULL;
 
@@ -279,9 +279,6 @@ int main() {
 
         time++;
     }
-
-    // Close the file after reading the contents.
-    fclose(file);
     
     return 0;
 }

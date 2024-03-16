@@ -5,7 +5,7 @@
 #ifndef QUEUE_H_
 #define QUEUE_H_
 
-typedef struct {
+typedef struct node_t {
     /** Pointer to the process data associated with this node. */
     process_t *process;
     /** Pointer to the next node in the queue, NULL if it's the last node. */
@@ -15,7 +15,7 @@ typedef struct {
 } node_t;
 
 // Alias node_t as queue_t for clarity when used to represent a queue
-typedef node_t queue_t;
+typedef node_t queue_t; 
 
 /**
  * Adds a new process to the end of the queue.
