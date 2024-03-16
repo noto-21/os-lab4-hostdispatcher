@@ -17,7 +17,7 @@
 extern enum MEM_MODE {
     REALTIME = REALTIME_MODE,
     JOB = JOB_MODE
-};
+} MEM_MODE;
 
 typedef struct {
     int printers;            /** Number of printers available. */
