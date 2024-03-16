@@ -18,6 +18,16 @@ typedef struct node_t {
 typedef node_t queue_t; 
 
 /**
+ * Creates a new queue.
+ * 
+ * @param queue Pointer to the head of the queue.
+ * 
+ * Dynamically allocates memory for a new node and assigns it to the queue pointer.
+ * Assumes that the passed 'queue' pointer points to a dummy head node to keep things simple.
+ */
+extern queue_t *create_queue();
+
+/**
  * Adds a new process to the end of the queue.
  * 
  * @param queue Pointer to the head of the queue.
@@ -40,5 +50,7 @@ extern void push(queue_t **queue, process_t *process);
  * Assumes the 'queue' pointer points to a dummy head node.
  */
 extern process_t *pop(queue_t **queue);
+
+extern void print_queue(queue_t *queue);
 
 #endif /* QUEUE_H_ */
