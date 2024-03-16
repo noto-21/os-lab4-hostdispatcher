@@ -7,7 +7,7 @@
 #include "memory.h"
 #include "util.h"
 
-#define MAX_PROCESSES 1024
+#define MAX_PROCESSES 10
 
 queue_t *job_queue, *realtime_queue, *first_priority, *second_priority, *third_priority;
 
