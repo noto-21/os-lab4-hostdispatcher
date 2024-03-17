@@ -7,6 +7,7 @@
 #define ALLOCATED_MEMORY 1024
 
 #define MAX_CDS 2
+#define MAX_PRINTERS 2
 
 #define MAX_SCANNERS 1
 #define MAX_MODEMS 1

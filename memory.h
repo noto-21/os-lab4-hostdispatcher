@@ -7,4 +7,7 @@
 extern void allocate_memory(enum MEM_MODE mode, process_t *proc);
 extern void deallocate_memory(enum MEM_MODE mode, process_t *proc);
 
+extern void allocate_resources(enum MEM_MODE mode, process_t *process);
+extern void deallocate_resources(enum MEM_MODE mode, process_t *process);
+
 #endif /* MEMORY_H_ */

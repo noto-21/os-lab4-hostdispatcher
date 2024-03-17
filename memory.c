@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include "resource.h"
 #include "memory.h"
 #include "process.h"
@@ -50,4 +51,41 @@ extern void deallocate_memory(enum MEM_MODE mode, process_t *proc) {
     proc->mem_index = -1;
     if (available_res->mem_index > 0)
         available_res->mem_index -= proc->mbytes;
+}
+
+extern void allocate_resources(enum MEM_MODE mode, process_t *process) {
+    bool available = (
+        process != NULL &&
+        process->mem_index == -1 && 
+        available_res->cds >= process->cds && 
+        available_res->scanners >= process->scanners && 
+        available_res->modems >= process->modems &&
+        available_res->printers >= process->printers
+    );
+
+    switch (mode) {
+        case JOB_MODE:
+            available = available && (available_res->memory_available >= process->mbytes);
+            break;
+        
+        case REALTIME_MODE:
+            available = available && (available_res->realtime_memory >= process->mbytes);
+            break;
+    }
+
+    if (available) {
+        allocate_memory(mode, process);
+        available_res->cds -= process->cds;
+        available_res->scanners -= process->scanners;
+        available_res->modems -= process->modems;
+        available_res->printers -= process->printers;
+    }
+}
+
+extern void deallocate_resources(enum MEM_MODE mode, process_t *process) {
+    deallocate_memory(mode, process);
+    available_res->cds += process->cds;
+    available_res->scanners += process->scanners;
+    available_res->modems += process->modems;
+    available_res->printers += process->printers;
 }
