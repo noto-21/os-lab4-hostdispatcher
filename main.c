@@ -1,3 +1,10 @@
+/*
+Noah Toma
+Okiki Ojo
+Jason Stuckless
+Bilal Khalil
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
