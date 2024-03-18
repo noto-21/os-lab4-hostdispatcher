@@ -1,3 +1,6 @@
+#include <stdbool.h>
+#include "process.h"
+
 #ifndef RESOURCE_H_
 #define RESOURCE_H_
 
@@ -36,5 +39,46 @@ typedef struct {
 
 // Available resources
 extern resource_t* available_res;
+
+/**
+ * Generates a string representing the difference between two quantities of the same resource.
+ * Useful for creating easily understandable logs. For example, differences
+ * are formatted as "+5" for positive, "-3" for negative differences.
+ * 
+ * @param a The initial quantity of the resource.
+ * @param b The final quantity of the resource.
+ * @return A pointer to a string representation of the difference.
+ */
+extern char* diff_resources(int a, int b);
+
+/**
+ * Checks if the necessary resources, including memory, are available for a process.
+ * This considers the process's mode and its specific resource requirements.
+ * 
+ * @param mode The mode of the process (REALTIME or JOB).
+ * @param process A pointer to the process for which resources are being checked.
+ * @return True if all required resources are available, false otherwise.
+ */
+extern bool available_resources(enum MEM_MODE mode, process_t *process);
+
+/**
+ * Allocates the required resources, including memory, for a process based on its mode.
+ * This function ensures that a process has all necessary resources before execution.
+ * 
+ * @param mode The mode of the process (REALTIME or JOB).
+ * @param process A pointer to the process for which resources are being allocated.
+ * @return True if resources were successfully allocated, false otherwise.
+ */
+extern bool allocate_resources(enum MEM_MODE mode, process_t *process);
+
+/**
+ * Deallocates the resources, including memory, previously allocated to a process.
+ * This is crucial for resource management, ensuring resources are returned to the system.
+ * 
+ * @param mode The mode of the process (REALTIME or JOB).
+ * @param process A pointer to the process whose resources are to be deallocated.
+ * @return True if resources were successfully deallocated, false otherwise.
+ */
+extern bool deallocate_resources(enum MEM_MODE mode, process_t *process);
 
 #endif /* RESOURCE_H_ */

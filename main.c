@@ -78,7 +78,7 @@ int main() {
 
     // Sort the dispatch list by arrival time.
     int dispatch_list_len = sizeof(dispatch_list) / sizeof(dispatch_list[0]);
-    qsort(dispatch_list, dispatch_list_len, sizeof(process_t), arrivalTime);
+    qsort(dispatch_list, dispatch_list_len, sizeof(process_t), arrival_time);
 
     // Push the processes into the appropriate queues based off of their priority.
     for (int i = 0; i < dispatch_list_len; i ++) {
