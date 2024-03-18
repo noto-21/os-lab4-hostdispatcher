@@ -4,6 +4,7 @@
 #ifndef PROCESS_H_
 #define PROCESS_H_
 
+// Process struct, stores the process state
 typedef struct {
     int arrival_time;    /** Time when the process arrives in the system. */
     int priority;        /** Priority of the process, affects queue positioning. */

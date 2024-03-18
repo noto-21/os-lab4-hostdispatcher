@@ -40,17 +40,18 @@ extern queue_t *create_queue();
 extern void push(queue_t **queue, process_t *process);
 
 /**
- * Removes and returns the last process from the queue.
+ * Removes and returns the current process from the specified node in the queue.
  * 
- * @param queue Pointer to the head of the queue.
- * @return Pointer to the removed process, or NULL if the queue is empty.
+ * This function takes a pointer to a node (within a queue) and removes that node from the queue.
+ * It handles the connections of surrounding nodes to maintain the integrity of the queue.
+ * Finally, it frees the memory allocated for the removed node and returns the process it contained.
  * 
- * This function traverses the queue to find the last process, removes it from the queue,
- * and returns it. It manages the pointers of the preceding node to bypass the removed node.
- * Assumes the 'queue' pointer points to a dummy head node.
+ * @param queue A double pointer to the node to be removed. This allows the function to modify
+ *              the caller's pointer, particularly useful when removing the head of the queue. 
+ *              Give us flexibility to remove any node in the queue.
+ * @return The process contained within the removed node. If the queue is empty or the pointer is
+ *         NULL, it returns NULL.
  */
 extern process_t *pop(queue_t **queue);
-
-extern void print_queue(queue_t *queue);
 
 #endif /* QUEUE_H_ */

@@ -2,6 +2,8 @@
 #include "memory.h"
 #include "process.h"
 
+// Checks the difference between two resources and returns a string representation of the difference e.g. +5, -3, etc...
+// This is to enhance the readability of the logs
 extern char* diff_resources(int a, int b) {
     // We have to use malloc here to allocate some memory for the string, 
     // because you can't return arrays from functions in C.
@@ -17,10 +19,14 @@ extern char* diff_resources(int a, int b) {
     return buffer; 
 }
 
+// Allocate memory for a process given the mode (realtime or job) and the process
 extern bool allocate_memory(enum MEM_MODE mode, process_t *proc) {
     int prev_mem_available = available_res->memory_available;
     int prev_realtime_mem = available_res->realtime_memory;
 
+    // We use -1 to indicate that the memory is not allocated
+    // If the memory index is not -1, then the memory is already allocated
+    // We can't allocate more memory than what is already allocated
     if (proc->mem_index != -1) {
         printf("Memory already allocated for process\n");
         return false;
@@ -31,6 +37,7 @@ extern bool allocate_memory(enum MEM_MODE mode, process_t *proc) {
         available_res->memory[i] = 1;
     }
 
+    // Using the mode substract the memory from the correct available resource in this case either realtime or job
     switch (mode) {
         case REALTIME_MODE:
             if (available_res->realtime_memory > 0) {
@@ -45,6 +52,7 @@ extern bool allocate_memory(enum MEM_MODE mode, process_t *proc) {
             break;
     }
 
+    // Update the process memory index and the available memory index
     proc->mem_index = temp_mem_index;
     if (available_res->mem_index < ALLOCATED_MEMORY - proc->mbytes)
         available_res->mem_index += proc->mbytes;
@@ -57,10 +65,14 @@ extern bool allocate_memory(enum MEM_MODE mode, process_t *proc) {
     return true;
 }
 
+// De-allocate memory for a process given the mode (realtime or job) and the process
 extern bool deallocate_memory(enum MEM_MODE mode, process_t *proc) {
     int prev_mem_available = available_res->memory_available;
     int prev_realtime_mem = available_res->realtime_memory;
 
+    // We use -1 to indicate that the memory is not allocated
+    // If the memory index is -1, then the memory is already de-allocated
+    // Thus there is no need to de-allocate it again
     if (proc->mem_index == -1) {
         printf("Memory already deallocated for process\n");
         return false;
@@ -71,6 +83,7 @@ extern bool deallocate_memory(enum MEM_MODE mode, process_t *proc) {
         available_res->memory[i] = -1;
     }
 
+    // Using the mode add the memory back to the correct available resource in this case either realtime or job
     switch (mode) {
         case REALTIME_MODE:
             if (available_res->realtime_memory < MAX_REALTIME_MEMORY) {
@@ -85,6 +98,7 @@ extern bool deallocate_memory(enum MEM_MODE mode, process_t *proc) {
             break;
     }
 
+    // Update the process memory index and the available memory index
     proc->mem_index = -1;
     if (available_res->mem_index > 0)
         available_res->mem_index -= proc->mbytes;
@@ -97,6 +111,7 @@ extern bool deallocate_memory(enum MEM_MODE mode, process_t *proc) {
     return true;
 }
 
+// Check if the resources (including memory) are available for a process taking into account the mode (realtime or job)
 extern bool available_resources(enum MEM_MODE mode, process_t *process) {
     bool available = (
         process != NULL &&
@@ -120,13 +135,16 @@ extern bool available_resources(enum MEM_MODE mode, process_t *process) {
     return available;
 }
 
+// Allocate resources (memory included) for a process taking into account the mode (realtime or job)
 extern bool allocate_resources(enum MEM_MODE mode, process_t *process) {
+    // If the resources are available, allocate the memory and the resources
     if (available_resources(mode, process)) {
         int prev_cds = available_res->cds;
         int prev_scanners = available_res->scanners;
         int prev_modems = available_res->modems;
         int prev_printers = available_res->printers;
 
+        // We use memory as a guideline to check if the resources are available
         if (allocate_memory(mode, process)) {
             available_res->cds -= process->cds;
             available_res->scanners -= process->scanners;
@@ -147,12 +165,15 @@ extern bool allocate_resources(enum MEM_MODE mode, process_t *process) {
 
 }
 
+// De-allocate resources (memory included) for a process taking into account the mode (realtime or job)
 extern bool deallocate_resources(enum MEM_MODE mode, process_t *process) {
     int prev_cds = available_res->cds;
     int prev_scanners = available_res->scanners;
     int prev_modems = available_res->modems;
     int prev_printers = available_res->printers;
 
+    // If the resources are available, de-allocate the memory and the resources
+    // We use memory as a guideline to check if the resources are available
     if (deallocate_memory(mode, process)) {
         available_res->cds += process->cds;
         available_res->scanners += process->scanners;

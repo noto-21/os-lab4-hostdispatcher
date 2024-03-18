@@ -9,17 +9,16 @@
  * Assumes that the passed 'queue' pointer points to a dummy head node to keep things simple.
  */
 extern queue_t *create_queue() {
-    // Dynamically allocate memory for a new node.
+    // Dynamically allocate memory for a new node of the query.
     node_t *new_node = (node_t*) malloc(sizeof(node_t));
     if (!new_node) {
         fprintf(stderr, "Memory allocation failed to create a new queue\n");
         exit(EXIT_FAILURE);
     }
     
-    // Initialize the new_node with process and NULL pointers for prev and next.
-    new_node->process = NULL; // Assign process to the new node.
-    new_node->next = NULL; // This new node will be the last node, so next is NULL.
-    new_node->prev = NULL; // This will be updated below if it's not the first node.
+    new_node->process = NULL; 
+    new_node->next = NULL;
+    new_node->prev = NULL;
 
     return new_node;
 }
@@ -42,10 +41,9 @@ extern void push(queue_t **queue, process_t *process) {
         exit(EXIT_FAILURE);
     }
     
-    // Initialize the new_node with process and NULL pointers for prev and next.
-    new_node->process = process; // Assign process to the new node.
-    new_node->next = NULL; // This new node will be the last node, so next is NULL.
-    new_node->prev = NULL; // This will be updated below if it's not the first node.
+    new_node->process = process;
+    new_node->next = NULL;
+    new_node->prev = NULL; 
 
     if (*queue == NULL || (*queue)->process == NULL) {
         // The queue is empty, so this new node is now the queue.
@@ -79,18 +77,16 @@ extern void push(queue_t **queue, process_t *process) {
 extern process_t *pop(queue_t **queue) {
     // Check if the queue or the target node is NULL. If so, there's nothing to remove.
     if (queue == NULL || *queue == NULL) {
-        return NULL; // Nothing to remove, so return NULL.
+        return NULL;
     }
 
     // Check if the node contains a process. If not, there's nothing to remove.
+    // We don't want to remove the dummy head node, as if we do we would need to re-create the queue from scratch.
     if ((*queue)->process == NULL) {
-        return NULL; // Nothing to remove, so return NULL.
+        return NULL; 
     }
 
-    // The node we're going to remove.
     node_t *node_to_remove = *queue;
-
-    // The process information contained within the node. We'll return this at the end.
     process_t *return_process = node_to_remove->process;
 
     // If there's a node after the one we're removing, we need to update its 'prev' pointer
@@ -111,20 +107,8 @@ extern process_t *pop(queue_t **queue) {
     }
 
     // Now that we've detached the node from the queue, we can safely free its memory.
+    // What we're freeing here is the `node_t` struct that makes up the node in the queue and not the process itself.
+    // As if we remove the process itself, we would lose the reference to it.
     free(node_to_remove);
-
-    // Return the process that was in the removed node.
     return return_process;
-}
-
-extern void print_queue(queue_t *queue) {
-    node_t *current = queue;
-    while (current != NULL) {
-        if (current->process != NULL) {
-            printf("Time: %d, Process Memory Address: %p\n", current->process->arrival_time, (void *)current->process);
-        } else {
-            printf("Dummy head or invalid node\n");
-        }
-        current = current->next;
-    }
 }
