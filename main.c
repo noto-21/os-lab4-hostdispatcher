@@ -31,17 +31,17 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
-    // Set the available resources to their available maximums
+    // Set the available resources to their maximum capacities
     available_res->cds = MAX_CDS;
     available_res->scanners = MAX_SCANNERS;
     available_res->modems = MAX_MODEMS;
     available_res->printers = MAX_PRINTERS;
 
-    // In megabytes
+    // Set memory in megabytes
     available_res->memory_available = MAX_JOB_MEMORY;
     available_res->realtime_memory = MAX_REALTIME_MEMORY;
 
-    // Flash/Clear memory
+    // Clear memory to indicate it's unallocated
     for (int i = 0; i < ALLOCATED_MEMORY; i++) {
         available_res->memory[i] = -1;
     }
