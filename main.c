@@ -118,19 +118,19 @@ int main() {
     resource_t *res = available_res;
     printf("(Available Resources) Memory Available: %d, Realtime Memory: %d, Printers: %d, Scanners: %d, Modems: %d, CDs: %d\n\n", res->memory_available, res->realtime_memory, res->printers, res->scanners, res->modems, res->cds);
 
-    // Each variable hols the current process that is running per queue. We pop out processes from the queue and store them in these variables.
-    // This is to ensure that we don't lose track of the processes that are running, ustil they finish execution.
+    // Each variable holds the current process that is running per queue. We pop out processes from the queue and store them in these variables.
+    // This is to ensure that we don't lose track of the processes that are running, until they finish execution.
     // Think of them as the current process per-queue that we're trying to execute.
     // By default the order goes realtime queue (prempt), user jobs queue, first priority queue, second priority queue, third priority queue (round robin).
     
-    // The realtime queue is preemptive, so we don't need to worry about the time quantum. It keeps running til completion.
+    // The realtime queue is preemptive, so we don't need to worry about the time quantum. It keeps running until completion.
     // The time quantum is 1 second (every iteration of the `time` variable is 1 sec).
     // For user jobs, we use a round-robin approach, so we run the first process in the first priority queue, then the first process in the second priority queue, 
     // then the first process in the third priority queue, then the second process in the first priority queue, and so on.
     // If the 3rd priority queue still has processes, we push said process to the end of the queue, and do this for every iteration of the `time` variable, until the process finishes execution.
     // Note: we only deallocate resources (memory included) once the process finishes execution.
 
-    // One all the queue are empty and all the processes have finished execution, we terminate the program.
+    // One all the queues are empty and all the processes have finished execution, we terminate the program.
     
     // Running process stores the running process in general (realtime or job queue), we use it to stop job processes from running.
     // This helps enforce the time quantum for job processes.
